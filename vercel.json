@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/creator-submit/:id", "destination": "/creator-submit.html?id=:id" },
+    { "source": "/brand-submit/:id", "destination": "/brand-submit.html?id=:id" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
+}

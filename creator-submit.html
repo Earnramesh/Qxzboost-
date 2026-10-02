@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Profile | CreatorConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-blobs"><div class="blob blob-1"></div></div>
+    <nav><div class="logo">CreatorConnect</div></nav>
+
+    <div style="max-width: 600px; margin: 60px auto; padding: 20px;">
+        <div class="glass-card" id="creatorFormContainer">
+            <h2 style="margin-bottom: 24px; text-align: center;">Complete Your Profile</h2>
+            
+            <!-- Step 1 -->
+            <div class="step active" id="step1">
+                <h3 style="margin-bottom: 16px;">Instagram Details</h3>
+                <div class="form-group">
+                    <label>Instagram Username</label>
+                    <input type="text" class="form-control" id="igUsername" placeholder="@username">
+                </div>
+                <div class="form-group">
+                    <label>Follower Range</label>
+                    <select class="form-control" id="igRange">
+                        <option value="10K-25K">10K - 25K</option>
+                        <option value="25K-50K">25K - 50K</option>
+                        <option value="50K-100K">50K - 100K</option>
+                        <option value="100K+">100K+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Profile Screenshot (Verification)</label>
+                    <input type="file" class="form-control" id="igScreenshot" accept="image/png, image/jpeg, image/webp">
+                    <div id="uploadProgress" style="font-size: 0.8rem; color: var(--accent); margin-top: 8px;"></div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%" onclick="nextStep(2)">Next Step</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step" id="step2">
+                <h3 style="margin-bottom: 16px;">Contact & Category</h3>
+                <div class="form-group">
+                    <label>Primary Category</label>
+                    <select class="form-control" id="category">
+                        <option value="Technology">Technology</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Lifestyle">Lifestyle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (India)</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="+91">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline" style="flex: 1" onclick="nextStep(1)">Back</button>
+                    <button class="btn btn-primary" style="flex: 1" id="submitCreatorBtn">Submit Profile</button>
+                </div>
+            </div>
+            
+            <!-- Success State -->
+            <div class="step" id="stepSuccess" style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
+                <h3>Profile Submitted Successfully</h3>
+                <p style="color: var(--text-muted); margin: 16px 0;">Status: <span class="badge badge-pending">Pending Verification</span></p>
+                <button class="btn btn-primary" onclick="window.location.href='/creator-dashboard.html'">Go to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/creator.js"></script>
+</body>
+</html>
