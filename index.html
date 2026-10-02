@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ================= ORIGINAL CSS RESTORED ================= */
+        /* ================= PREMIUM UI CSS ================= */
         :root {
             --bg-dark: #0f172a;
             --bg-glass: rgba(255, 255, 255, 0.03);
@@ -15,450 +15,391 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #8b5cf6;
-            --accent-hover: #7c3aed;
             --gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
             --success: #10b981;
-            --warning: #f59e0b;
             --danger: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
 
-        .view-section { display: none; animation: fadeInView 0.5s ease; }
+        /* SPA View Logic */
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
         .view-section.active { display: block; }
-        @keyframes fadeInView { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .bg-blobs { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
-        .blob { position: absolute; filter: blur(90px); opacity: 0.4; border-radius: 50%; animation: float 10s infinite ease-in-out alternate; }
+        /* Background */
+        .bg-blobs { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
+        .blob { position: absolute; filter: blur(90px); opacity: 0.4; border-radius: 50%; animation: float 10s infinite alternate; }
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #6366f1; }
         .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #ec4899; animation-delay: -5s; }
         @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
 
-        .glass-card { background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
-        .glass-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.15); }
-
-        .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn:active { transform: scale(0.95); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Components */
+        .glass-card { background: var(--bg-glass); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 32px; box-shadow: 0 4px 30px rgba(0,0,0,0.1); }
+        
+        .btn { padding: 14px 28px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; width: 100%; }
+        .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--gradient); color: white; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
-        .btn-primary:hover { box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6); }
-        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); }
-        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
 
-        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; text-align: left; }
         .form-group label { margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); }
         .form-control { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white; padding: 12px 16px; border-radius: 8px; outline: none; transition: 0.3s; width: 100%; }
-        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+        .form-control:focus { border-color: var(--accent); }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); }
+        /* Nav */
+        nav { display: flex; justify-content: space-between; padding: 20px 5%; border-bottom: 1px solid var(--glass-border); }
         .logo { font-size: 1.5rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: flex; gap: 24px; align-items: center;}
+
+        /* Loader & Toasts */
+        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.9); z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; opacity: 0; transition: 0.3s; z-index: 10000; background: var(--accent); transform: translateY(20px); }
+        .toast.show { opacity: 1; transform: translateY(0); }
         
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; }
-        .modal.active { opacity: 1; pointer-events: all; }
-        .modal-content { max-width: 400px; width: 90%; text-align: center; }
-
-        .toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 9999; font-weight: 500; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast-success { background: var(--success); }
-        .toast-error { background: var(--danger); }
-
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 60px 5%; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .badge-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .badge-approved { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--glass-border); }
-        th { color: var(--text-muted); font-size: 0.9rem; }
-
-        /* Multi-step Form Animation */
-        .step { display: none; animation: fadeInView 0.4s ease; }
-        .step.active { display: block; }
+        .checkbox-group { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
+    <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+
+    <!-- Global Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <h3 id="loaderText">Please wait...</h3>
     </div>
 
-    <!-- ================= VIEW 1: HOME PAGE ================= -->
+    <!-- ================= VIEW 1: HOME ================= -->
     <div id="view-home" class="view-section active">
-        <nav>
-            <div class="logo">Qxz Boost</div>
-            <div class="nav-links">
-                <button class="btn btn-outline" onclick="window.openAuthModal()">Login / Signup</button>
-            </div>
-        </nav>
-        <header class="grid-2">
-            <div>
-                <h1 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 20px;">Where Creators <br><span style="background: var(--gradient); -webkit-background-clip: text; color: transparent;">Meet Brands.</span></h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 32px;">Discover sponsorship opportunities, showcase your audience, and connect with brands looking for creators like you.</p>
-                <div style="display: flex; gap: 16px;">
-                    <button class="btn btn-primary" onclick="window.openAuthModal()">Get Started with Google</button>
-                </div>
-            </div>
-            <!-- Original Visual Mockup -->
-            <div class="glass-card" style="position: relative; height: 400px;">
-                <div style="padding: 16px; border-bottom: 1px solid var(--glass-border);">Sponsorships Available</div>
-                <div style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
-                    <div style="height: 60px; background: rgba(255,255,255,0.05); border-radius: 8px;"></div>
-                    <div style="height: 60px; background: rgba(255,255,255,0.05); border-radius: 8px;"></div>
-                    <div style="height: 60px; background: rgba(255,255,255,0.05); border-radius: 8px;"></div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Firebase Auth & Role Modal -->
-        <div class="modal" id="authModal">
-            <!-- Google Login Step -->
-            <div class="modal-content glass-card" id="googleLoginStep">
-                <h2 style="margin-bottom: 24px;">Welcome to Qxz Boost</h2>
-                <button class="btn btn-outline" style="width: 100%; display: flex; gap: 12px; justify-content: center; background: white; color: #333;" onclick="window.signInWithGoogle()">
-                    <svg width="24" height="24" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                    </svg>
-                    Continue with Google
+        <nav><div class="logo">Qxz Boost</div></nav>
+        <div style="max-width: 800px; margin: 100px auto; text-align: center; padding: 0 20px;">
+            <h1 style="font-size: 4rem; line-height: 1.1; margin-bottom: 24px;">Connect Creators <br><span style="background: var(--gradient); -webkit-background-clip: text; color: transparent;">With Brands.</span></h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 40px;">Select your role to get started.</p>
+            
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" style="max-width: 250px;" onclick="window.startLogin('creator')">
+                    I am a Creator
                 </button>
-                <button class="btn btn-outline" style="border: none; color: var(--text-muted); margin-top: 16px;" onclick="window.closeAuthModal()">Cancel</button>
+                <button class="btn btn-outline" style="max-width: 250px;" onclick="window.startLogin('brand')">
+                    I am a Brand
+                </button>
             </div>
-
-            <!-- Role Selection Step -->
-            <div class="modal-content glass-card" id="roleSelectionStep" style="display: none;">
-                <h2 style="margin-bottom: 24px;">What are you?</h2>
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <button class="btn btn-primary" onclick="window.saveUserRole('creator')">I am a Creator</button>
-                    <button class="btn btn-outline" onclick="window.saveUserRole('brand')">I am a Brand</button>
-                </div>
-            </div>
+            <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);">Secured by Google Authentication</p>
         </div>
     </div>
 
-    <!-- ================= VIEW 2: CREATOR SUBMIT (OLD UI RESTORED) ================= -->
-    <div id="view-creator" class="view-section">
+    <!-- ================= VIEW 2: CREATOR SUBMIT ================= -->
+    <div id="view-creator-submit" class="view-section">
         <nav>
-            <div class="logo">Creator Dashboard</div>
-            <button class="btn btn-outline logout-btn" onclick="window.logout()">Logout</button>
+            <div class="logo">Creator Setup</div>
+            <button class="btn btn-outline" style="width: auto; padding: 8px 16px;" onclick="window.logout()">Logout</button>
         </nav>
-        <div style="max-width: 600px; margin: 60px auto; padding: 20px;">
-            <div class="glass-card" id="creatorFormContainer">
-                <h2 style="margin-bottom: 24px; text-align: center;">Complete Your Profile</h2>
+        <div style="max-width: 500px; margin: 40px auto; padding: 20px;">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 24px; text-align: center;">Submit Your Profile</h2>
                 
-                <!-- Step 1 -->
-                <div class="step active" id="step1">
-                    <h3 style="margin-bottom: 16px;">Instagram Details</h3>
-                    <div class="form-group">
-                        <label>Instagram Username</label>
-                        <input type="text" class="form-control" id="igUsername" placeholder="@username">
-                    </div>
-                    <div class="form-group">
-                        <label>Follower Range</label>
-                        <select class="form-control" id="igRange">
-                            <option value="10K-25K">10K - 25K</option>
-                            <option value="25K-50K">25K - 50K</option>
-                            <option value="50K-100K">50K - 100K</option>
-                            <option value="100K+">100K+</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Profile Screenshot (Verification)</label>
-                        <input type="file" class="form-control" id="igScreenshot" accept="image/png, image/jpeg, image/webp">
-                        <div id="uploadProgress" style="font-size: 0.8rem; color: var(--accent); margin-top: 8px;"></div>
-                    </div>
-                    <button class="btn btn-primary" style="width: 100%" onclick="window.nextStep(2)">Next Step</button>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="step" id="step2">
-                    <h3 style="margin-bottom: 16px;">Contact & Category</h3>
-                    <div class="form-group">
-                        <label>Primary Category</label>
-                        <select class="form-control" id="category">
-                            <option value="Technology">Technology</option>
-                            <option value="Gaming">Gaming</option>
-                            <option value="Fashion">Fashion</option>
-                            <option value="Lifestyle">Lifestyle</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number (India)</label>
-                        <input type="tel" class="form-control" id="phone" placeholder="+91">
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-outline" style="flex: 1" onclick="window.nextStep(1)">Back</button>
-                        <button class="btn btn-primary" style="flex: 1" id="submitCreatorBtn" onclick="window.submitCreatorProfile()">Submit Profile</button>
-                    </div>
+                <div class="form-group">
+                    <label>Instagram / YouTube Username</label>
+                    <input type="text" class="form-control" id="c_username" placeholder="@username">
                 </div>
                 
-                <!-- Success State -->
-                <div class="step" id="stepSuccess" style="text-align: center;">
-                    <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
-                    <h3>Profile Submitted Successfully</h3>
-                    <p style="color: var(--text-muted); margin: 16px 0;">Status: <span class="badge badge-pending" id="creatorStatusText">Pending Verification</span></p>
+                <div class="form-group">
+                    <label>Followers Count</label>
+                    <select class="form-control" id="c_followerSelect" onchange="window.toggleCustomFollower()">
+                        <option value="1K - 5K">1K - 5K</option>
+                        <option value="5K - 10K">5K - 10K</option>
+                        <option value="10K - 50K">10K - 50K</option>
+                        <option value="50K - 100K">50K - 100K</option>
+                        <option value="100K - 1M">100K - 1M</option>
+                        <option value="1M+">1M+</option>
+                        <option value="custom">Other (Type manually)</option>
+                    </select>
+                    <input type="text" class="form-control" id="c_followerCustom" placeholder="e.g. 2.5M" style="display: none; margin-top: 10px;">
                 </div>
+
+                <div class="form-group">
+                    <label>Profile Screenshot (Proof)</label>
+                    <input type="file" class="form-control" id="c_screenshot" accept="image/*">
+                    <span id="uploadStatus" style="color: var(--accent); font-size: 0.8rem; margin-top: 5px;"></span>
+                </div>
+
+                <button class="btn btn-primary" id="btnCreatorSubmit" onclick="window.submitCreator()">Submit Details</button>
             </div>
         </div>
     </div>
 
-    <!-- ================= VIEW 3: BRAND DASHBOARD ================= -->
-    <div id="view-brand" class="view-section">
+    <!-- ================= VIEW 3: BRAND SUBMIT ================= -->
+    <div id="view-brand-submit" class="view-section">
         <nav>
-            <div class="logo">Brand Dashboard</div>
-            <button class="btn btn-outline logout-btn" onclick="window.logout()">Logout</button>
+            <div class="logo">Brand Setup</div>
+            <button class="btn btn-outline" style="width: auto; padding: 8px 16px;" onclick="window.logout()">Logout</button>
         </nav>
-        <div style="padding: 40px 5%;">
-            <h2>Discover Verified Creators</h2>
-            <div class="grid-3" id="creatorGrid" style="margin-top:20px;"></div>
-        </div>
-    </div>
+        <div style="max-width: 500px; margin: 40px auto; padding: 20px;">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 24px; text-align: center;">What do you need?</h2>
+                
+                <div class="form-group">
+                    <label>Campaign Requirements</label>
+                    <div class="checkbox-group"><input type="checkbox" id="req_app"> Mobile App Promotion</div>
+                    <div class="checkbox-group"><input type="checkbox" id="req_tech"> Tech Product Review</div>
+                    <div class="checkbox-group"><input type="checkbox" id="req_gift"> Barter / Gift Collaboration</div>
+                    
+                    <input type="text" class="form-control" id="b_customReq" placeholder="Or type custom requirement..." style="margin-top: 10px;">
+                </div>
 
-    <!-- ================= VIEW 4: ADMIN DASHBOARD ================= -->
-    <div id="view-admin" class="view-section">
-        <nav>
-            <div class="logo">Admin Panel</div>
-            <button class="btn btn-outline logout-btn" onclick="window.logout()">Logout</button>
-        </nav>
-        <div style="padding: 40px 5%;">
-            <h2>Pending Creators</h2>
-            <div class="glass-card" style="margin-top: 20px; overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Followers</th>
-                            <th>Category</th>
-                            <th>Screenshot</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody"></tbody>
-                </table>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-control" id="b_category">
+                        <option value="Technology">Technology</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
+                        <option value="Finance">Finance & Crypto</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Business Email</label>
+                    <input type="email" class="form-control" id="b_email" placeholder="email@company.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone / WhatsApp Number</label>
+                    <input type="tel" class="form-control" id="b_phone" placeholder="+91">
+                </div>
+
+                <button class="btn btn-primary" id="btnBrandSubmit" onclick="window.submitBrand()">Find Creators</button>
             </div>
         </div>
     </div>
 
-    <!-- ================= FIREBASE LOGIC (ES Module) ================= -->
+    <!-- ================= VIEW 4: SUCCESS / DASHBOARDS ================= -->
+    <div id="view-dashboard" class="view-section">
+        <nav>
+            <div class="logo">Dashboard</div>
+            <button class="btn btn-outline" style="width: auto; padding: 8px 16px;" onclick="window.logout()">Logout</button>
+        </nav>
+        <div style="max-width: 600px; margin: 100px auto; text-align: center;">
+            <div class="glass-card">
+                <div style="font-size: 4rem;">🎉</div>
+                <h2 style="margin: 20px 0;" id="dashTitle">Submitted Successfully!</h2>
+                <p style="color: var(--text-muted);" id="dashDesc">Your details have been saved securely.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= FIREBASE LOGIC ================= -->
     <script type="module">
         import { auth, db, storage, googleProvider } from './firebase-config.js';
         import { signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { doc, setDoc, getDoc, collection, query, where, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
         let currentUser = null;
-        let uploadedImgUrl = null;
+        let intendedRole = null; // Stores 'creator' or 'brand' when button is clicked
+        let uploadedScreenshotUrl = null;
 
-        // --- GLOBAL UTILS ---
-        window.showToast = (message, type = 'success') => {
+        // UI Helpers
+        window.showToast = (msg) => {
             const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
+            toast.className = 'toast';
+            toast.innerText = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(()=>toast.remove(),300); }, 3000);
         };
+
+        window.showLoader = (msg = "Loading...") => {
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loader').style.display = 'flex';
+        };
+        window.hideLoader = () => { document.getElementById('loader').style.display = 'none'; };
 
         window.switchView = (viewId) => {
-            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            if(viewId === 'view-admin') loadAdminDashboard();
-            if(viewId === 'view-brand') loadBrandDashboard();
         };
 
-        // --- AUTH LOGIC ---
-        window.openAuthModal = () => {
-            document.getElementById('authModal').classList.add('active');
-            document.getElementById('googleLoginStep').style.display = 'block';
-            document.getElementById('roleSelectionStep').style.display = 'none';
-        };
-        window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
-
-        window.signInWithGoogle = async () => {
+        // --- AUTHENTICATION FLOW ---
+        window.startLogin = async (role) => {
+            intendedRole = role;
+            window.showLoader("Signing in with Google...");
+            
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 currentUser = result.user;
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                
-                if (userDoc.exists()) {
-                    window.closeAuthModal();
-                    redirectBasedOnRole(userDoc.data().role);
-                } else {
-                    document.getElementById('googleLoginStep').style.display = 'none';
-                    document.getElementById('roleSelectionStep').style.display = 'block';
-                }
-            } catch (error) { window.showToast(error.message, 'error'); }
+                await processUserAfterLogin();
+            } catch (error) {
+                window.hideLoader();
+                window.showToast("Login Failed: " + error.message);
+                console.error(error);
+            }
         };
 
-        window.saveUserRole = async (role) => {
-            if(!currentUser) return;
+        async function processUserAfterLogin() {
             try {
-                await setDoc(doc(db, "users", currentUser.uid), {
-                    name: currentUser.displayName, email: currentUser.email, role: role
-                });
-                window.closeAuthModal();
-                redirectBasedOnRole(role);
-            } catch (error) { window.showToast(error.message, 'error'); }
-        };
+                const userRef = doc(db, "users", currentUser.uid);
+                const userSnap = await getDoc(userRef);
 
-        window.logout = () => signOut(auth);
+                if (userSnap.exists()) {
+                    // User pehle se hai, uski saved role dekho
+                    routeUser(userSnap.data().role);
+                } else {
+                    // Naya user hai, intent (Creator/Brand) save karo
+                    await setDoc(userRef, {
+                        email: currentUser.email,
+                        name: currentUser.displayName,
+                        role: intendedRole,
+                        createdAt: serverTimestamp()
+                    });
+                    routeUser(intendedRole);
+                }
+            } catch (error) {
+                window.hideLoader();
+                window.showToast("Database Error!");
+                console.error(error);
+            }
+        }
 
+        async function routeUser(role) {
+            try {
+                // Check if they already submitted their main form
+                const dataRef = doc(db, role === 'creator' ? 'creators' : 'brands', currentUser.uid);
+                const dataSnap = await getDoc(dataRef);
+
+                window.hideLoader();
+                
+                if(dataSnap.exists()) {
+                    // Already submitted, show Dashboard
+                    document.getElementById('dashTitle').innerText = role === 'creator' ? "Profile Under Review" : "Brand Profile Active";
+                    document.getElementById('dashDesc').innerText = role === 'creator' ? "We will notify you once approved." : "Ready to discover creators.";
+                    window.switchView('view-dashboard');
+                } else {
+                    // Need to submit form
+                    if(role === 'creator') window.switchView('view-creator-submit');
+                    if(role === 'brand') {
+                        document.getElementById('b_email').value = currentUser.email; // Pre-fill email
+                        window.switchView('view-brand-submit');
+                    }
+                }
+            } catch (e) {
+                window.hideLoader();
+                console.error(e);
+            }
+        }
+
+        // On Page Refresh, check session
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) redirectBasedOnRole(userDoc.data().role);
+                const userSnap = await getDoc(doc(db, "users", user.uid));
+                if(userSnap.exists()) routeUser(userSnap.data().role);
             } else {
                 window.switchView('view-home');
             }
         });
 
-        function redirectBasedOnRole(role) {
-            if(role === 'creator') {
-                window.switchView('view-creator');
-                checkCreatorProfile();
-            }
-            else if(role === 'brand') window.switchView('view-brand');
-            else if(role === 'admin') window.switchView('view-admin');
-        }
-
-        // --- CREATOR LOGIC (RESTORED) ---
-        window.nextStep = (step) => {
-            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            document.getElementById(step === 'Success' ? 'stepSuccess' : `step${step}`).classList.add('active');
+        window.logout = () => {
+            window.showLoader("Logging out...");
+            signOut(auth).then(() => {
+                window.hideLoader();
+                window.switchView('view-home');
+            });
         };
 
-        // Firebase Storage Upload Logic
-        document.getElementById('igScreenshot').addEventListener('change', (e) => {
+        // --- CREATOR SUBMIT LOGIC ---
+        window.toggleCustomFollower = () => {
+            const select = document.getElementById('c_followerSelect');
+            const customInput = document.getElementById('c_followerCustom');
+            customInput.style.display = select.value === 'custom' ? 'block' : 'none';
+        };
+
+        // Storage Upload
+        document.getElementById('c_screenshot').addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            
-            const storageRef = ref(storage, `creator-screenshots/${currentUser.uid}/${file.name}`);
+            if(!file) return;
+
+            const storageRef = ref(storage, `screenshots/${currentUser.uid}_${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             uploadTask.on('state_changed', 
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    document.getElementById('uploadProgress').innerText = `Uploading: ${Math.round(progress)}%`;
+                (snap) => {
+                    let progress = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                    document.getElementById('uploadStatus').innerText = `Uploading: ${progress}%`;
                 }, 
-                (error) => window.showToast('Upload failed', 'error'), 
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        uploadedImgUrl = downloadURL;
-                        document.getElementById('uploadProgress').innerText = 'Upload Complete ✅';
-                        window.showToast('Screenshot uploaded');
-                    });
+                (err) => window.showToast("Upload failed"), 
+                async () => {
+                    uploadedScreenshotUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                    document.getElementById('uploadStatus').innerText = "Upload Complete ✅";
                 }
             );
         });
 
-        async function checkCreatorProfile() {
-            const creatorDoc = await getDoc(doc(db, "creators", currentUser.uid));
-            if(creatorDoc.exists()) {
-                window.nextStep('Success');
-                const status = creatorDoc.data().status;
-                const badge = document.getElementById('creatorStatusText');
-                if(status === 'approved') {
-                    badge.className = 'badge badge-approved';
-                    badge.innerText = 'Profile Approved ✅';
-                }
-            }
-        }
+        window.submitCreator = async () => {
+            const username = document.getElementById('c_username').value;
+            let followers = document.getElementById('c_followerSelect').value;
+            if(followers === 'custom') followers = document.getElementById('c_followerCustom').value;
 
-        window.submitCreatorProfile = async () => {
-            const username = document.getElementById('igUsername').value;
-            if(!username) return window.showToast("Enter Instagram Username", "error");
-            if(!uploadedImgUrl) return window.showToast("Please upload screenshot first!", "error");
+            if(!username || !followers) return window.showToast("Fill all details!");
+            if(!uploadedScreenshotUrl) return window.showToast("Wait for image to upload!");
 
-            const submitBtn = document.getElementById('submitCreatorBtn');
-            submitBtn.innerText = "Submitting...";
-            submitBtn.disabled = true;
-
+            window.showLoader("Submitting Profile...");
             try {
                 await setDoc(doc(db, "creators", currentUser.uid), {
-                    userId: currentUser.uid,
+                    uid: currentUser.uid,
                     email: currentUser.email,
                     username: username,
-                    followers: document.getElementById('igRange').value,
-                    category: document.getElementById('category').value,
-                    phone: document.getElementById('phone').value,
-                    screenshotURL: uploadedImgUrl,
-                    status: "pending",
-                    createdAt: serverTimestamp()
+                    followers: followers,
+                    screenshot: uploadedScreenshotUrl,
+                    status: 'pending',
+                    submittedAt: serverTimestamp()
                 });
-                window.showToast("Profile Submitted!");
-                window.nextStep('Success');
-            } catch (error) {
-                window.showToast(error.message, 'error');
-                submitBtn.innerText = "Submit Profile";
-                submitBtn.disabled = false;
+                routeUser('creator'); // Will redirect to dashboard
+            } catch (e) {
+                window.hideLoader();
+                window.showToast("Error saving profile");
             }
         };
 
-        // --- ADMIN LOGIC ---
-        async function loadAdminDashboard() {
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
-            
-            const q = query(collection(db, "creators"), where("status", "==", "pending"));
-            const querySnapshot = await getDocs(q);
-            
-            tbody.innerHTML = '';
-            if(querySnapshot.empty) return tbody.innerHTML = '<tr><td colspan="5">No pending requests</td></tr>';
-            
-            querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${data.username}</td>
-                        <td>${data.followers}</td>
-                        <td><span class="badge badge-pending">${data.category}</span></td>
-                        <td><a href="${data.screenshotURL}" target="_blank" style="color: var(--accent);">View Image</a></td>
-                        <td style="display: flex; gap: 8px;">
-                            <button class="btn btn-outline" style="color:var(--success); border-color:var(--success); padding:6px 12px; font-size:0.8rem;" onclick="window.updateStatus('${docSnap.id}', 'approved')">Approve</button>
-                            <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); padding:6px 12px; font-size:0.8rem;" onclick="window.updateStatus('${docSnap.id}', 'rejected')">Reject</button>
-                        </td>
-                    </tr>`;
-            });
-        }
+        // --- BRAND SUBMIT LOGIC ---
+        window.submitBrand = async () => {
+            const customReq = document.getElementById('b_customReq').value;
+            const category = document.getElementById('b_category').value;
+            const email = document.getElementById('b_email').value;
+            const phone = document.getElementById('b_phone').value;
 
-        window.updateStatus = async (docId, newStatus) => {
+            if(!email || !phone) return window.showToast("Email and Phone are required!");
+
+            // Gather Checkboxes
+            let requirements = [];
+            if(document.getElementById('req_app').checked) requirements.push("Mobile App");
+            if(document.getElementById('req_tech').checked) requirements.push("Tech Product");
+            if(document.getElementById('req_gift').checked) requirements.push("Barter/Gift");
+            if(customReq) requirements.push(customReq);
+
+            window.showLoader("Saving details...");
             try {
-                await updateDoc(doc(db, "creators", docId), { status: newStatus });
-                window.showToast(`Creator ${newStatus}!`);
-                loadAdminDashboard();
-            } catch (error) { window.showToast("Error updating status", "error"); }
+                await setDoc(doc(db, "brands", currentUser.uid), {
+                    uid: currentUser.uid,
+                    email: email,
+                    phone: phone,
+                    category: category,
+                    requirements: requirements,
+                    status: 'active',
+                    submittedAt: serverTimestamp()
+                });
+                routeUser('brand'); // Will redirect to dashboard
+            } catch (e) {
+                window.hideLoader();
+                window.showToast("Error saving profile");
+            }
         };
-
-        // --- BRAND LOGIC ---
-        async function loadBrandDashboard() {
-            const grid = document.getElementById('creatorGrid');
-            grid.innerHTML = '<p>Loading creators...</p>';
-            
-            const q = query(collection(db, "creators"), where("status", "==", "approved"));
-            const querySnapshot = await getDocs(q);
-            
-            grid.innerHTML = '';
-            if(querySnapshot.empty) return grid.innerHTML = '<p>No approved creators available yet.</p>';
-            
-            querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                grid.innerHTML += `
-                    <div class="glass-card">
-                        <h3 style="margin-bottom: 8px;">${data.username}</h3>
-                        <div style="margin-bottom: 16px;">
-                            <span class="badge" style="background: rgba(139,92,246,0.2); color: var(--accent);">${data.category}</span>
-                            <span style="font-size: 0.9rem; color: var(--text-muted); margin-left: 8px;">${data.followers} Followers</span>
-                        </div>
-                        <button class="btn btn-primary" style="width: 100%;" onclick="window.showToast('Connecting with ${data.email}')">Contact Creator</button>
-                    </div>`;
-            });
-        }
     </script>
 </body>
 </html>
